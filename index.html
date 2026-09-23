@@ -288,7 +288,7 @@
 
   // Scroll reveal. Anything already on screen at load stays visible; only
   // content further down fades up as it enters the viewport.
-  if (!reduce && 'IntersectionObserver' in window) {
+  const setupReveal = () => {
     const targets = document.querySelectorAll('.sec-head, .role, .project > div, .grid-4 > div, .edu > div, .contact .inner > *');
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
@@ -297,7 +297,7 @@
         e.target.classList.remove('bars-pending');
         io.unobserve(e.target);
       });
-    }, { rootMargin: '0px 0px -8% 0px' });
+    });
     const fold = innerHeight;
     targets.forEach((el, i) => {
       if (el.getBoundingClientRect().top < fold) return;
@@ -307,6 +307,10 @@
     });
     const evalBox = document.querySelector('.eval');
     if (evalBox.getBoundingClientRect().top >= fold) { evalBox.classList.add('bars-pending'); io.observe(evalBox); }
+  };
+  // Measure positions only after web fonts load, since they change the layout.
+  if (!reduce && 'IntersectionObserver' in window) {
+    (document.fonts ? document.fonts.ready : Promise.resolve()).then(setupReveal);
   }
 
   // Background: a faint dot grid that drifts in a slow wave and shifts a little with scroll.
@@ -327,11 +331,12 @@
     const off = (scrollY * 0.15) % GAP;
     for (let y = -GAP; y < H + GAP; y += GAP) {
       for (let x = 0; x < W + GAP; x += GAP) {
-        const w = Math.sin(x * 0.012 + t * 0.0004) + Math.cos((y + scrollY * .15) * 0.01 - t * 0.0003);
-        const a = 0.05 + 0.07 * (w + 2) / 4;
-        const s = 1 + 0.6 * (w + 2) / 4;
+        const w = Math.sin(x * 0.009 + t * 0.0007) + Math.cos((y + scrollY * .15) * 0.008 - t * 0.0005);
+        const k = (w + 2) / 4; // 0..1, crest of the wave = 1
+        const a = 0.07 + 0.23 * k * k;
+        const s = 1.2 + 1.6 * k;
         ctx.fillStyle = `rgba(10,10,10,${a})`;
-        ctx.fillRect(x + w * 2, y - off + w * 2, s, s);
+        ctx.fillRect(x + w * 4 - s / 2, y - off + w * 4 - s / 2, s, s);
       }
     }
   };

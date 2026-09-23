@@ -298,7 +298,7 @@
         io.unobserve(e.target);
       });
     });
-    const fold = innerHeight;
+    const fold = innerHeight + 120; // margin so nothing near the edge starts hidden
     targets.forEach((el, i) => {
       if (el.getBoundingClientRect().top < fold) return;
       el.classList.add('reveal');
@@ -308,40 +308,67 @@
     const evalBox = document.querySelector('.eval');
     if (evalBox.getBoundingClientRect().top >= fold) { evalBox.classList.add('bars-pending'); io.observe(evalBox); }
   };
-  // Measure positions only after web fonts load, since they change the layout.
+  // Measure positions once the page (and its fonts) have loaded, since fonts change the layout.
   if (!reduce && 'IntersectionObserver' in window) {
-    (document.fonts ? document.fonts.ready : Promise.resolve()).then(setupReveal);
+    const go = () => (document.fonts ? document.fonts.ready : Promise.resolve()).then(setupReveal);
+    if (document.readyState === 'complete') go(); else addEventListener('load', go);
   }
 
-  // Background: a faint dot grid that drifts in a slow wave and shifts a little with scroll.
+  // Background: a sparse network. Nodes drift slowly; nearby nodes are joined
+  // by thin lines that fade with distance. Scrolling nudges the field a little.
   const cv = document.getElementById('field');
   const ctx = cv.getContext('2d');
-  const GAP = 28;
-  let W = 0, H = 0;
+  const LINK = 170;
+  let W = 0, H = 0, nodes = [];
   const size = () => {
     const dpr = Math.min(devicePixelRatio || 1, 2);
     W = innerWidth; H = innerHeight;
     cv.width = W * dpr; cv.height = H * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const count = Math.max(18, Math.min(60, Math.round(W * H / 26000)));
+    nodes = Array.from({ length: count }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - .5) * 0.25, vy: (Math.random() - .5) * 0.25,
+      r: 1.5 + Math.random() * 1.5,
+    }));
   };
   size(); addEventListener('resize', size);
 
-  const draw = (t) => {
+  let lastScroll = scrollY;
+  addEventListener('scroll', () => {
+    const d = (scrollY - lastScroll) * 0.12;
+    lastScroll = scrollY;
+    for (const n of nodes) n.y -= d * (n.r / 3);
+    if (reduce) draw();
+  }, { passive: true });
+
+  const draw = () => {
     ctx.clearRect(0, 0, W, H);
-    const off = (scrollY * 0.15) % GAP;
-    for (let y = -GAP; y < H + GAP; y += GAP) {
-      for (let x = 0; x < W + GAP; x += GAP) {
-        const w = Math.sin(x * 0.009 + t * 0.0007) + Math.cos((y + scrollY * .15) * 0.008 - t * 0.0005);
-        const k = (w + 2) / 4; // 0..1, crest of the wave = 1
-        const a = 0.07 + 0.23 * k * k;
-        const s = 1.2 + 1.6 * k;
-        ctx.fillStyle = `rgba(10,10,10,${a})`;
-        ctx.fillRect(x + w * 4 - s / 2, y - off + w * 4 - s / 2, s, s);
+    ctx.lineWidth = 1;
+    for (let i = 0; i < nodes.length; i++) {
+      const a = nodes[i];
+      for (let j = i + 1; j < nodes.length; j++) {
+        const b = nodes[j];
+        const dx = a.x - b.x, dy = a.y - b.y, d = Math.hypot(dx, dy);
+        if (d > LINK) continue;
+        ctx.strokeStyle = `rgba(10,10,10,${0.16 * (1 - d / LINK)})`;
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
       }
     }
+    ctx.fillStyle = 'rgba(10,10,10,.35)';
+    for (const n of nodes) { ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2); ctx.fill(); }
   };
-  if (reduce) { draw(0); addEventListener('scroll', () => draw(0), { passive: true }); }
-  else { const loop = (t) => { draw(t); requestAnimationFrame(loop); }; requestAnimationFrame(loop); }
+
+  const step = () => {
+    for (const n of nodes) {
+      n.x += n.vx; n.y += n.vy;
+      if (n.x < -20) n.x = W + 20; else if (n.x > W + 20) n.x = -20;
+      if (n.y < -20) n.y = H + 20; else if (n.y > H + 20) n.y = -20;
+    }
+    draw();
+    requestAnimationFrame(step);
+  };
+  if (reduce) draw(); else requestAnimationFrame(step);
 </script>
 </body>
 </html>

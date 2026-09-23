@@ -19,7 +19,6 @@
     --soft-dark: #C4C4BE;
     --line: rgba(10,10,10,.13);
     --line-dark: rgba(237,237,233,.15);
-    --tint: rgba(10,10,10,.045); /* see-through, so the network shows behind the contact bar */
     --sans: "Archivo", Helvetica, Arial, sans-serif;
     --serif: "Newsreader", Georgia, "Times New Roman", serif;
     --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
@@ -116,7 +115,8 @@
   .edu b { display: block; font-family: var(--serif); font-weight: 400; font-size: 25px; line-height: 1.15; letter-spacing: -.01em; }
 
   /* Contact */
-  .contact { background: var(--tint); color: var(--ink); padding-block: 22px 14px; }
+  .contact { color: var(--ink); padding-block: 0 14px; }
+  .contact .inner { border-top: 1px solid var(--ink); padding-top: 22px; }
   .contact .label { color: var(--mute); }
   .contact-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 32px; }
   .contact h2 { margin: 0; font-weight: 800; font-variation-settings: "wdth" 70; font-size: 20px; line-height: 1; text-transform: uppercase; }

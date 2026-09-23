@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jhovahn Gibbs</title>
+<meta name="description" content="Jhovahn Gibbs — full-stack and applied AI engineer in San Francisco. Previously Meta (Instagram Reels ads, Ads Manager).">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  /* One look, committed: black & white. */
+  :root {
+    color-scheme: light;
+    --paper: #ECECE8;
+    --ink: #0A0A0A;
+    --ink-2: #1A1A1A;
+    --mute: #66665F;
+    --mute-dark: #8F8F88;
+    --soft-dark: #C9C9C4;
+    --line: rgba(10,10,10,.14);
+    --line-dark: rgba(236,236,232,.16);
+    --display: "Archivo", "Arial Narrow", Helvetica, sans-serif;
+    --serif: "Instrument Serif", "Times New Roman", serif;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+    --gutter: clamp(16px, 4vw, 56px);
+    --ease: cubic-bezier(.2,.8,.2,1);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--display);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+  .wrap { padding-inline: var(--gutter); }
+  .label { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+
+  /* ---------- Nav ---------- */
+  .nav {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    padding-block: 18px;
+    mix-blend-mode: difference; color: #fff;
+  }
+  .nav .mark { font-weight: 800; font-variation-settings: "wdth" 70; font-size: 20px; text-decoration: none; }
+  .nav ul { display: flex; gap: clamp(14px, 3vw, 32px); list-style: none; margin: 0; padding: 0; }
+  .nav a { text-decoration: none; }
+  .nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .nav .clock { font-variant-numeric: tabular-nums; }
+
+  /* ---------- Hero ---------- */
+  .hero { position: relative; display: grid; gap: clamp(24px, 4vw, 48px); padding-block: clamp(24px, 6vw, 64px) clamp(32px, 5vw, 56px); }
+  .hero-top { display: flex; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap; color: var(--mute); }
+  .name {
+    margin: 0; position: relative; z-index: 2;
+    font-weight: 900; font-variation-settings: "wdth" 62;
+    font-size: clamp(64px, 17.5vw, 290px); line-height: .8; letter-spacing: -.02em; text-transform: uppercase;
+  }
+  .name .row { display: block; overflow: hidden; }
+  .name .row:nth-child(2) { text-align: right; }
+  .name .row span { display: inline-block; animation: rise 1s var(--ease) both; }
+  .name .row:nth-child(2) span { animation-delay: .08s; }
+  @keyframes rise { from { transform: translateY(100%); } to { transform: none; } }
+
+  .orb {
+    position: absolute; z-index: 1; pointer-events: none;
+    right: clamp(0px, 10vw, 220px); top: 50%;
+    width: min(46vw, 520px); aspect-ratio: 1; max-width: 100%;
+    transform: translateY(-52%);
+  }
+  .orb canvas { width: 100%; height: 100%; display: block; }
+  .orb figcaption { position: absolute; right: 0; bottom: 4%; color: var(--mute); }
+
+  .hero-bottom { position: relative; z-index: 2; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(24px, 5vw, 80px); align-items: end; }
+  .thesis { margin: 0; font-family: var(--serif); font-size: clamp(28px, 3.4vw, 48px); line-height: 1.08; text-wrap: balance; }
+  .thesis em { font-style: italic; }
+  .intro { max-width: 44ch; font-size: 17px; color: var(--ink-2); margin: 0; }
+  .intro strong { font-weight: 600; }
+  .open { display: inline-flex; align-items: center; gap: 10px; margin-top: 18px; color: var(--ink); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ink); animation: blink 1.4s steps(2) infinite; }
+  @keyframes blink { 50% { opacity: .15; } }
+
+  /* ---------- Marquee ---------- */
+  .marquee { background: var(--ink); color: var(--paper); overflow: hidden; white-space: nowrap; padding-block: 18px; }
+  .marquee-track { display: inline-flex; gap: 48px; will-change: transform; }
+  .marquee-track span {
+    display: inline-flex; align-items: center; gap: 48px;
+    font-weight: 800; font-variation-settings: "wdth" 62;
+    font-size: clamp(32px, 5vw, 64px); text-transform: uppercase; line-height: 1;
+  }
+  .marquee-track span::after { content: "✱"; font-weight: 400; font-size: .5em; }
+
+  /* ---------- Section scaffolding ---------- */
+  section.block { padding-block: clamp(64px, 11vw, 160px); }
+  .block-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 24px; margin-bottom: clamp(40px, 6vw, 80px); }
+  .block-head h2 {
+    margin: 0; font-weight: 300; font-variation-settings: "wdth" 110;
+    font-size: clamp(34px, 5.4vw, 80px); line-height: 1; letter-spacing: -.03em; text-wrap: balance;
+  }
+  .block-head h2 em { font-family: var(--serif); font-weight: 400; letter-spacing: -.01em; }
+
+  /* ---------- Experience ---------- */
+  .experience { background: var(--ink); color: var(--paper); }
+  .experience .block-head .label { color: var(--mute-dark); }
+  .role { border-top: 1px solid var(--line-dark); }
+  .role:last-of-type { border-bottom: 1px solid var(--line-dark); }
+  .role summary {
+    list-style: none; cursor: pointer;
+    display: grid; grid-template-columns: 150px minmax(0, 1fr) auto; gap: 24px; align-items: center;
+    padding-block: clamp(24px, 3.5vw, 44px);
+  }
+  .role summary::-webkit-details-marker { display: none; }
+  .role .when { font-family: var(--mono); font-size: 12px; color: var(--mute-dark); font-variant-numeric: tabular-nums; }
+  .role h3 {
+    margin: 0; font-weight: 800; font-variation-settings: "wdth" 62;
+    font-size: clamp(40px, 7.5vw, 120px); line-height: .88; text-transform: uppercase;
+    transition: font-variation-settings .5s var(--ease);
+  }
+  .role h3 i { font-family: var(--serif); font-weight: 400; text-transform: none; font-size: .5em; letter-spacing: 0; color: var(--soft-dark); }
+  .role summary:hover h3 { font-variation-settings: "wdth" 100; }
+  .role .toggle { font-size: 32px; font-weight: 300; line-height: 1; transition: transform .4s var(--ease); }
+  .role[open] .toggle { transform: rotate(45deg); }
+  .role-body { display: grid; grid-template-columns: 150px minmax(0, 1fr) minmax(0, 1fr); gap: 24px; padding-bottom: clamp(28px, 4vw, 48px); }
+  .role-body .title { grid-column: 2; margin: 0; font-family: var(--serif); font-size: 26px; font-style: italic; }
+  .role-body ul { grid-column: 2 / -1; margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 40px; color: var(--soft-dark); }
+  .role-body li { border-top: 1px solid var(--line-dark); padding-top: 12px; max-width: 52ch; }
+  .tags { grid-column: 2 / -1; display: flex; flex-wrap: wrap; gap: 6px; }
+  .tags span { font-family: var(--mono); font-size: 11px; border: 1px solid var(--line-dark); padding: 3px 8px; border-radius: 99px; }
+
+  /* ---------- Case study ---------- */
+  .case { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 96px); align-items: start; }
+  .case h3 {
+    margin: 0 0 24px; font-weight: 900; font-variation-settings: "wdth" 62;
+    font-size: clamp(56px, 9vw, 150px); line-height: .84; text-transform: uppercase; letter-spacing: -.01em;
+  }
+  .case h3 i { display: block; font-family: var(--serif); font-weight: 400; text-transform: none; font-size: .42em; letter-spacing: 0; margin-top: .25em; }
+  .case p { margin: 0 0 16px; max-width: 58ch; color: var(--ink-2); }
+  .case .tags { margin-top: 24px; }
+  .case .tags span { border-color: var(--line); }
+  .facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--ink); margin-top: 32px; }
+  .facts div { padding: 14px 16px 0 0; }
+  .facts div + div { padding-left: 16px; border-left: 1px solid var(--line); }
+  .facts b { display: block; font-weight: 800; font-variation-settings: "wdth" 62; font-size: clamp(32px, 3.4vw, 48px); line-height: 1; font-variant-numeric: tabular-nums; }
+  .facts span { color: var(--mute); }
+
+  .eval { border: 1px solid var(--ink); padding: clamp(20px, 3vw, 32px); background: var(--paper); }
+  .eval-head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 28px; color: var(--mute); }
+  .bar-row { display: grid; grid-template-columns: 96px minmax(0, 1fr) 56px; gap: 14px; align-items: center; margin-bottom: 18px; }
+  .bar-row .k { color: var(--mute); }
+  .bar { height: 40px; background: repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 10%); position: relative; }
+  .bar i { position: absolute; inset: 0 auto 0 0; background: var(--ink); width: var(--w); animation: grow 1.4s var(--ease) both .3s; }
+  @keyframes grow { from { width: 0; } }
+  .bar-row .v { font-family: var(--mono); font-size: 14px; text-align: right; font-variant-numeric: tabular-nums; }
+  .axis { display: grid; grid-template-columns: 96px minmax(0, 1fr) 56px; gap: 14px; color: var(--mute); }
+  .axis div { display: flex; justify-content: space-between; }
+  .log { margin: 28px 0 0; padding: 16px; background: var(--ink); color: var(--paper); font: 12px/1.7 var(--mono); overflow-x: auto; white-space: pre; }
+  .log .ok { color: #fff; font-weight: 500; }
+  .log .dim { color: var(--mute-dark); }
+
+  /* ---------- Stack ---------- */
+  .stack-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+  .stack-col { padding: 24px 24px 24px 0; border-right: 1px solid var(--line); }
+  .stack-col + .stack-col { padding-left: 24px; }
+  .stack-col:last-child { border-right: 0; }
+  .stack-col h4 { margin: 0 0 16px; color: var(--mute); font-weight: 400; }
+  .stack-col ul { list-style: none; margin: 0; padding: 0; }
+  .stack-col li { font-size: clamp(20px, 1.9vw, 28px); font-weight: 500; font-variation-settings: "wdth" 85; letter-spacing: -.01em; border-bottom: 1px dashed var(--line); padding-block: 6px; }
+  .edu { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 24px; margin-top: clamp(56px, 8vw, 104px); }
+  .edu-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+  .edu-list div { border-top: 1px solid var(--ink); padding-top: 14px; }
+  .edu-list b { display: block; font-family: var(--serif); font-weight: 400; font-size: clamp(24px, 2.4vw, 32px); line-height: 1.1; }
+  .edu-list span { color: var(--mute); }
+
+  /* ---------- Contact ---------- */
+  .contact { background: var(--ink); color: var(--paper); padding-block: clamp(64px, 10vw, 140px) 0; }
+  .contact .label.lead { color: var(--mute-dark); }
+  .contact h2 {
+    margin: 16px 0 clamp(32px, 5vw, 64px);
+    font-weight: 900; font-variation-settings: "wdth" 62;
+    font-size: clamp(64px, 15vw, 250px); line-height: .82; text-transform: uppercase; letter-spacing: -.02em;
+  }
+  .contact h2 em { font-family: var(--serif); font-weight: 400; text-transform: none; }
+  .contact-row { display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: center; justify-content: space-between; }
+  .email { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+  .email code { font-family: var(--mono); font-size: clamp(16px, 2vw, 22px); user-select: all; word-break: break-all; }
+  .btn {
+    font: 500 12px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase;
+    background: var(--paper); color: var(--ink); border: 1px solid var(--paper);
+    padding: 12px 16px; border-radius: 99px; cursor: pointer;
+  }
+  .btn:hover { background: transparent; color: var(--paper); }
+  .links { display: flex; gap: 24px; flex-wrap: wrap; }
+  .links a { text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+  footer { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-block: 72px 28px; color: var(--mute-dark); border-top: 1px solid var(--line-dark); margin-top: clamp(56px, 8vw, 104px); }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 900px) {
+    .hero-bottom, .block-head, .case, .edu { grid-template-columns: 1fr; }
+    .orb { width: 78vw; top: 30%; right: -8vw; }
+    .orb figcaption { display: none; }
+    .role summary { grid-template-columns: minmax(0, 1fr) auto; gap: 8px 16px; }
+    .role .when { grid-column: 1 / -1; }
+    .role-body { grid-template-columns: 1fr; }
+    .role-body .title, .role-body ul, .role-body .tags { grid-column: 1; }
+    .role-body ul { grid-template-columns: 1fr; }
+    .stack-grid { grid-template-columns: 1fr 1fr; }
+    .stack-col:nth-child(2n) { border-right: 0; }
+    .stack-col:nth-child(3) { padding-left: 0; }
+    .nav .hide-sm { display: none; }
+  }
+  @media (max-width: 520px) {
+    .stack-grid, .edu-list { grid-template-columns: 1fr; }
+    .stack-col, .stack-col + .stack-col { padding-left: 0; border-right: 0; }
+    .bar-row, .axis { grid-template-columns: 72px minmax(0, 1fr) 48px; gap: 10px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .001s !important; animation-delay: 0s !important; transition: none !important; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap nav">
+  <a class="mark" href="#top" aria-label="Back to top">JG/</a>
+  <ul class="label">
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#work">Work</a></li>
+    <li class="hide-sm"><a href="#stack">Stack</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <span class="label clock hide-sm" id="clock">San Francisco</span>
+</div>
+
+<header class="wrap hero" id="top">
+  <div class="hero-top label">
+    <span>Full-stack &amp; applied AI engineer</span>
+    <span>San Francisco, CA</span>
+  </div>
+
+  <h1 class="name" aria-label="Jhovahn Gibbs">
+    <span class="row"><span>Jhovahn</span></span>
+    <span class="row"><span>Gibbs</span></span>
+  </h1>
+
+  <figure class="orb" aria-hidden="true">
+    <canvas id="orb"></canvas>
+    <figcaption class="label">fig. — 900 vectors, cosine space</figcaption>
+  </figure>
+
+  <div class="hero-bottom">
+    <p class="thesis">Shipped ads to Instagram Reels at Meta. <em>Now building AI that answers correctly.</em></p>
+    <div>
+      <p class="intro">I work across the whole stack: <strong>React, Next.js and GraphQL</strong> on the front end, <strong>FastAPI, Express and Rails</strong> on the back end, plus Kotlin on Android. These days I build retrieval systems and write evals to show they work.</p>
+      <span class="open label"><span class="dot"></span>Open to full-stack, forward-deployed &amp; applied AI roles</span>
+    </div>
+  </div>
+</header>
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track" id="marquee">
+    <span>TypeScript</span><span>Python</span><span>React</span><span>FastAPI</span><span>GraphQL</span><span>Kotlin</span><span>RAG</span><span>PostgreSQL</span>
+    <span>TypeScript</span><span>Python</span><span>React</span><span>FastAPI</span><span>GraphQL</span><span>Kotlin</span><span>RAG</span><span>PostgreSQL</span>
+  </div>
+</div>
+
+<section class="experience block" id="experience">
+  <div class="wrap">
+    <div class="block-head">
+      <span class="label">Industry experience</span>
+      <h2>Six years shipping product at <em>Meta scale</em> and startup speed.</h2>
+    </div>
+
+    <details class="role" open>
+      <summary>
+        <span class="when">Oct 2024 — Oct 2025</span>
+        <h3>Meta <i>Instagram · Ads Manager</i></h3>
+        <span class="toggle" aria-hidden="true">+</span>
+      </summary>
+      <div class="role-body">
+        <p class="title">Software Engineer</p>
+        <ul>
+          <li>Built and launched a mid-scene ad feature in Ads Manager for Instagram Reels with product and design. Also shipped a related timeline-advance feature on Instagram Android that adapts to what a user did in earlier sessions.</li>
+          <li>Implemented automated testing for Reels ads in Ads Manager. That meant writing detailed test specs for each ad creative type, plus a lot of debugging and deployment work.</li>
+          <li>Ran Android UI experiments for Instagram ads in Kotlin, including a disappearing top gradient and gesture-exclusion zones that switch off native Android gestures on parts of the screen.</li>
+        </ul>
+        <div class="tags"><span>Kotlin</span><span>Android</span><span>React</span><span>Testing</span></div>
+      </div>
+    </details>
+
+    <details class="role">
+      <summary>
+        <span class="when">Oct 2020 — Oct 2022</span>
+        <h3>Facebook <i>via TekSystems</i></h3>
+        <span class="toggle" aria-hidden="true">+</span>
+      </summary>
+      <div class="role-body">
+        <p class="title">Software Engineer</p>
+        <ul>
+          <li>Built and maintained an internal tool in React, GraphQL and XHP/Hack that let Business Products Engineering make accurate additions to data pipelines.</li>
+          <li>Developed the XHP components behind the CMS that runs the Facebook and Instagram for Business websites.</li>
+          <li>Added features to the Static Signal platform and the Marketing Home internal tools to make them faster and easier to use.</li>
+          <li>Worked with cross-functional teams on campaign launches and wrote the regression test plans for CMS changes.</li>
+        </ul>
+        <div class="tags"><span>React</span><span>GraphQL</span><span>Hack / XHP</span><span>FlowJS</span></div>
+      </div>
+    </details>
+
+    <details class="role">
+      <summary>
+        <span class="when">Jul 2019 — May 2020</span>
+        <h3>LTSE <i>Long-Term Stock Exchange</i></h3>
+        <span class="toggle" aria-hidden="true">+</span>
+      </summary>
+      <div class="role-body">
+        <p class="title">Software Engineer</p>
+        <ul>
+          <li>Built the ETL process that moved Excel data into PostgreSQL through ActiveRecord.</li>
+          <li>Designed, tested and deployed a record-cloning process in Ruby on Rails.</li>
+          <li>Delivered integrated front-end and back-end features from stakeholder requirements.</li>
+          <li>Worked test-driven and object-oriented throughout.</li>
+        </ul>
+        <div class="tags"><span>Ruby on Rails</span><span>PostgreSQL</span><span>TDD</span></div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section class="wrap block" id="work">
+  <div class="block-head">
+    <span class="label">Case study</span>
+    <h2>Retrieval you can <em>measure</em>, not just demo.</h2>
+  </div>
+
+  <div class="case">
+    <div>
+      <h3>Job Pipeline RAG <i>Q&amp;A over a personal document set</i></h3>
+      <p>A retrieval-augmented Q&amp;A system built on FastAPI. Embeddings come from a local sentence-transformer model, and the cosine-similarity retrieval index is written from scratch.</p>
+      <p>It's a hybrid design: exact and numeric questions skip the embeddings and go straight to structured data parsing, because vectors are bad at "how many" questions.</p>
+      <p>A rerunnable eval harness scores every change. Two rounds of debugging took answer accuracy from 20% to 100%.</p>
+      <div class="facts">
+        <div><b>20→100%</b><span class="label">Eval accuracy</span></div>
+        <div><b>12</b><span class="label">pytest tests</span></div>
+        <div><b>2</b><span class="label">Debug passes</span></div>
+      </div>
+      <div class="tags"><span>Python</span><span>FastAPI</span><span>sentence-transformers</span><span>NumPy</span><span>pytest</span><span>Docker</span></div>
+    </div>
+
+    <div class="eval" role="img" aria-label="Eval harness answer accuracy: 20 percent at baseline, 100 percent after two debugging iterations">
+      <div class="eval-head label"><span>Eval harness · answer accuracy</span><span>0–100%</span></div>
+      <div class="bar-row"><span class="k label">Baseline</span><div class="bar"><i style="--w:20%"></i></div><span class="v">20%</span></div>
+      <div class="bar-row"><span class="k label">Pass 02</span><div class="bar"><i style="--w:100%"></i></div><span class="v">100%</span></div>
+      <div class="axis label"><span></span><div><span>0</span><span>50</span><span>100</span></div><span></span></div>
+<pre class="log"><span class="dim">$ python -m evals.run</span>
+<span class="dim">retrieval  cosine · top-k</span>
+<span class="dim">routing    numeric → structured parser</span>
+<span class="ok">accuracy   100%   ✓</span>
+<span class="dim">$ pytest</span>
+<span class="ok">12 passed</span></pre>
+    </div>
+  </div>
+</section>
+
+<section class="wrap block" id="stack" style="padding-top:0">
+  <div class="block-head">
+    <span class="label">Toolbox</span>
+    <h2>Comfortable <em>anywhere</em> in the stack.</h2>
+  </div>
+  <div class="stack-grid">
+    <div class="stack-col">
+      <h4 class="label">Languages</h4>
+      <ul><li>TypeScript</li><li>Python</li><li>JavaScript</li><li>Kotlin</li><li>Hack</li></ul>
+    </div>
+    <div class="stack-col">
+      <h4 class="label">Frameworks</h4>
+      <ul><li>React · Next.js</li><li>FastAPI</li><li>GraphQL</li><li>Express</li><li>Ruby on Rails</li></ul>
+    </div>
+    <div class="stack-col">
+      <h4 class="label">AI &amp; infra</h4>
+      <ul><li>RAG</li><li>sentence-transformers</li><li>Docker</li><li>RabbitMQ</li><li>Android</li></ul>
+    </div>
+    <div class="stack-col">
+      <h4 class="label">Data &amp; testing</h4>
+      <ul><li>PostgreSQL · MySQL</li><li>pytest</li><li>Jest · Mocha · Chai</li><li>Git · Mercurial</li></ul>
+    </div>
+  </div>
+
+  <div class="edu">
+    <span class="label">Education</span>
+    <div class="edu-list">
+      <div><b>Advanced Software Immersive</b><span class="label">Hack Reactor · San Francisco</span></div>
+      <div><b>BBA, Finance</b><span class="label">Pace University</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap">
+    <span class="label lead">Contact</span>
+    <h2>Let’s <em>build</em> it.</h2>
+    <div class="contact-row">
+      <div class="email">
+        <code id="email">jhovahngibbs@gmail.com</code>
+        <button class="btn" id="copy" type="button">Copy email</button>
+      </div>
+      <div class="links label">
+        <a href="https://linkedin.com/in/jhovahn" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/jhovahn" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <footer class="label">
+      <span>© 2026 Jhovahn Gibbs</span>
+      <span>San Francisco, CA</span>
+    </footer>
+  </div>
+</section>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // San Francisco time
+  const clock = document.getElementById('clock');
+  const tick = () => {
+    const t = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' });
+    clock.textContent = 'SF ' + t;
+  };
+  tick(); setInterval(tick, 15000);
+
+  // Copy email
+  const copy = document.getElementById('copy');
+  const emailEl = document.getElementById('email');
+  copy.addEventListener('click', () => {
+    const done = (msg) => { copy.textContent = msg; setTimeout(() => { copy.textContent = 'Copy email'; }, 1800); };
+    const select = () => {
+      const r = document.createRange(); r.selectNodeContents(emailEl);
+      const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+      done('Selected — press ⌘C');
+    };
+    try { navigator.clipboard.writeText(emailEl.textContent).then(() => done('Copied'), select); } catch (e) { select(); }
+  });
+
+  // Marquee drifts on its own; scroll speed pushes it
+  const track = document.getElementById('marquee');
+  let x = 0, v = 0, lastY = scrollY;
+  addEventListener('scroll', () => { v += (scrollY - lastY) * 0.15; lastY = scrollY; }, { passive: true });
+
+  // Orb: points on a sphere, like normalized embeddings, ripple as they rotate
+  const cv = document.getElementById('orb');
+  const ctx = cv.getContext('2d');
+  const N = 900, pts = [];
+  const golden = Math.PI * (3 - Math.sqrt(5));
+  for (let i = 0; i < N; i++) {
+    const y = 1 - (i / (N - 1)) * 2, r = Math.sqrt(1 - y * y), th = golden * i;
+    pts.push([Math.cos(th) * r, y, Math.sin(th) * r]);
+  }
+  let W = 0, H = 0, mx = 0, my = 0;
+  const size = () => {
+    const dpr = Math.min(devicePixelRatio || 1, 2), b = cv.getBoundingClientRect();
+    W = b.width; H = b.height; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
+  size(); addEventListener('resize', size);
+  addEventListener('pointermove', (e) => { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; }, { passive: true });
+
+  const draw = (t) => {
+    ctx.clearRect(0, 0, W, H);
+    const ry = t * 0.00018 + mx * 1.2, rx = -0.35 + my * 0.8;
+    const cy = Math.cos(ry), sy = Math.sin(ry), cx = Math.cos(rx), sx = Math.sin(rx);
+    const R = Math.min(W, H) * 0.38;
+    for (const [px, py, pz] of pts) {
+      const amp = reduce ? 1 : 1 + 0.07 * Math.sin(py * 9 - t * 0.003) * Math.max(0, Math.sin(t * 0.0011 + px * 2));
+      const x1 = px * cy - pz * sy, z1 = px * sy + pz * cy;
+      const y1 = py * cx - z1 * sx, z2 = py * sx + z1 * cx;
+      const persp = 2.4 / (2.4 + z2), depth = (1 - z2) / 2, s = 0.6 + depth * 1.6;
+      ctx.fillStyle = `rgba(10,10,10,${0.12 + depth * 0.75})`;
+      ctx.fillRect(W / 2 + x1 * R * amp * persp - s / 2, H / 2 + y1 * R * amp * persp - s / 2, s, s);
+    }
+  };
+
+  const loop = (t) => {
+    draw(t);
+    if (!reduce) {
+      v *= 0.92;
+      x -= 0.6 + Math.abs(v);
+      const half = track.scrollWidth / 2;
+      if (-x >= half) x += half;
+      track.style.transform = `translate3d(${x}px,0,0)`;
+    }
+    requestAnimationFrame(loop);
+  };
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

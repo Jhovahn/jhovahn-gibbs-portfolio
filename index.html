@@ -19,9 +19,7 @@
     --soft-dark: #C4C4BE;
     --line: rgba(10,10,10,.13);
     --line-dark: rgba(237,237,233,.15);
-    --sand: #D8CDBA;
-    --sand-mute: #6E6453;
-    --sand-line: rgba(60,48,30,.18);
+    --tint: #E3E3DE;
     --sans: "Archivo", Helvetica, Arial, sans-serif;
     --serif: "Newsreader", Georgia, "Times New Roman", serif;
     --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
@@ -118,16 +116,16 @@
   .edu b { display: block; font-family: var(--serif); font-weight: 400; font-size: 25px; line-height: 1.15; letter-spacing: -.01em; }
 
   /* Contact */
-  .contact { background: var(--sand); color: var(--ink); padding-block: 22px 14px; }
-  .contact .label { color: var(--sand-mute); }
+  .contact { background: var(--tint); color: var(--ink); padding-block: 22px 14px; }
+  .contact .label { color: var(--mute); }
   .contact-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 32px; }
   .contact h2 { margin: 0; font-weight: 800; font-variation-settings: "wdth" 70; font-size: 20px; line-height: 1; text-transform: uppercase; }
   .contact-list { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; }
   .contact-list code { font-family: var(--mono); font-size: 13px; user-select: all; word-break: break-all; }
   .contact-list a { text-decoration: none; border-bottom: 1px solid currentColor; }
-  .btn { font: 11px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; background: var(--ink); color: var(--sand); border: 1px solid var(--ink); padding: 6px 10px; border-radius: 99px; cursor: pointer; }
+  .btn { font: 11px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; background: var(--ink); color: var(--paper); border: 1px solid var(--ink); padding: 6px 10px; border-radius: 99px; cursor: pointer; }
   .btn:hover { background: transparent; color: var(--ink); }
-  footer { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 16px; padding-top: 10px; border-top: 1px solid var(--sand-line); }
+  footer { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 16px; padding-top: 10px; border-top: 1px solid var(--line); }
 
   @media (max-width: 800px) {
     .hero-row, .role, .project { grid-template-columns: 1fr; }
